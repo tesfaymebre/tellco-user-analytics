@@ -22,8 +22,7 @@ class DatabaseConfig:
     def url(self) -> str:
         """SQLAlchemy connection URL for PostgreSQL."""
         return (
-            f"postgresql+psycopg2://{self.user}:{self.password}"
-            f"@{self.host}:{self.port}/{self.name}"
+            f"postgresql+psycopg2://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
         )
 
 

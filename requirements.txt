@@ -8,3 +8,4 @@ matplotlib>=3.8
 seaborn>=0.13
 scikit-learn>=1.4
 plotly>=5.18
+ruff>=0.8

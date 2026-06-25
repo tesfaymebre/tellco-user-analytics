@@ -25,7 +25,7 @@ ANALYSIS_COLUMNS = USER_METRIC_COLUMNS + APP_COLUMNS
 
 
 def variable_overview(df: pd.DataFrame, columns: list[str] | None = None) -> pd.DataFrame:
-    """Summarise variable names, dtypes, non-null counts, and missing %. """
+    """Summarise variable names, dtypes, non-null counts, and missing %."""
     columns = columns or list(df.columns)
     rows = []
     for col in columns:
