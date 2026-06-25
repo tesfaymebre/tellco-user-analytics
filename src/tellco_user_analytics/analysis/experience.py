@@ -139,6 +139,23 @@ class ExperienceClusterResult:
     labels: np.ndarray
     model: KMeans
     data: pd.DataFrame
+    pipeline: Pipeline
+
+
+def worst_experience_cluster_id(clustered_df: pd.DataFrame) -> int:
+    """Return the cluster id with the poorest network experience (Task 5.1)."""
+    stats = describe_experience_clusters(clustered_df)
+    labels = cluster_labels_from_stats(stats)
+    for cluster_id, description in labels.items():
+        if description.startswith("Poor experience"):
+            return int(cluster_id)
+    means = stats.xs("mean", axis=1, level=1)
+    score = (
+        means[AVG_THROUGHPUT_KBPS].rank()
+        - means[AVG_RTT_MS].rank(ascending=False)
+        - means[AVG_TCP_RETRANS].rank(ascending=False)
+    )
+    return int(score.idxmin())
 
 
 def fit_experience_clusters(
@@ -164,6 +181,7 @@ def fit_experience_clusters(
         labels=labels,
         model=pipeline.named_steps["kmeans"],
         data=result_df,
+        pipeline=pipeline,
     )
 
 

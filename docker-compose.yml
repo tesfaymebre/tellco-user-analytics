@@ -23,5 +23,23 @@ services:
       timeout: 5s
       retries: 10
 
+  mysql:
+    image: mysql:8.0
+    container_name: tellco-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: tellco_dev
+      MYSQL_DATABASE: tellco_analytics
+    ports:
+      - "3307:3306"
+    volumes:
+      - tellco_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptellco_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   tellco_pg_data:
+  tellco_mysql_data:

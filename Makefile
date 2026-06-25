@@ -100,6 +100,18 @@ db-verify: ## Print xdr_data row count from PostgreSQL
 db-psql: ## Open interactive psql shell in the container
 	docker compose exec postgres psql -U postgres -d tellco
 
+.PHONY: mysql-up
+mysql-up: ## Start MySQL container (satisfaction export)
+	docker compose up -d mysql
+
+.PHONY: mysql-verify
+mysql-verify: ## Sample rows from MySQL satisfaction table
+	@$(BIN)/python -c "from $(PACKAGE).db.mysql_export import verify_mysql_export; print(verify_mysql_export())"
+
+.PHONY: mlflow-ui
+mlflow-ui: ## Launch MLflow UI at http://127.0.0.1:5000
+	$(BIN)/mlflow ui --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 5000
+
 # ---------------------------------------------------------------------------
 # Notebooks & one-shot setup
 # ---------------------------------------------------------------------------
