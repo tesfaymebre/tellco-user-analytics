@@ -26,3 +26,8 @@ telecom.sql
 
 # Accidental scratch files
 Untitled
+
+# Model artefacts & experiment logs (Task 5.7)
+artifacts/
+mlruns/
+mlflow.db

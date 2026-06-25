@@ -102,6 +102,13 @@ class ClusterResult:
     labels: np.ndarray
     model: KMeans
     data: pd.DataFrame
+    pipeline: Pipeline
+
+
+def less_engaged_cluster_id(clustered_df: pd.DataFrame) -> int:
+    """Return the cluster id with the lowest combined engagement (Task 5.1)."""
+    means = clustered_df.groupby("cluster")[ENGAGEMENT_FEATURES].mean().sum(axis=1)
+    return int(means.idxmin())
 
 
 def fit_engagement_clusters(
@@ -127,7 +134,12 @@ def fit_engagement_clusters(
 
     result_df = df.copy()
     result_df["cluster"] = labels
-    return ClusterResult(labels=labels, model=pipeline.named_steps["kmeans"], data=result_df)
+    return ClusterResult(
+        labels=labels,
+        model=pipeline.named_steps["kmeans"],
+        data=result_df,
+        pipeline=pipeline,
+    )
 
 
 def cluster_summary_stats(
