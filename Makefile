@@ -53,16 +53,16 @@ env: ## Copy .env.example to .env if missing
 
 .PHONY: lint
 lint: ## Run ruff linter
-	$(RUFF) check src tests
+	$(RUFF) check src tests app
 
 .PHONY: format
 format: ## Auto-format code with ruff
-	$(RUFF) format src tests
-	$(RUFF) check src tests --fix
+	$(RUFF) format src tests app
+	$(RUFF) check src tests app --fix
 
 .PHONY: format-check
 format-check: ## Verify formatting without writing changes
-	$(RUFF) format --check src tests
+	$(RUFF) format --check src tests app
 
 .PHONY: test
 test: ## Run unit tests
@@ -119,6 +119,26 @@ mlflow-ui: ## Launch MLflow UI at http://127.0.0.1:5000
 .PHONY: notebook
 notebook: ## Launch Jupyter from the notebooks/ directory
 	@cd notebooks && $(BIN)/jupyter notebook
+
+.PHONY: dashboard
+dashboard: install-dev ## Launch Streamlit dashboard at http://127.0.0.1:8501
+	$(BIN)/pip install -q -e ".[dashboard]"
+	$(BIN)/streamlit run app/Home.py --server.port 8501
+
+.PHONY: dashboard-docker
+dashboard-docker: ## Build and run dashboard via Docker Compose (requires db-load first)
+	docker compose up -d postgres mysql
+	docker compose build dashboard
+	docker compose up -d dashboard
+	@echo "Dashboard → http://127.0.0.1:8501"
+
+.PHONY: docker-build
+docker-build: ## Build dashboard Docker image locally
+	docker build -t tellco-dashboard:latest .
+
+.PHONY: feature-store-init
+feature-store-init: ## Create PostgreSQL feature_store schema
+	@$(BIN)/python -c "from $(PACKAGE).db.feature_store import init_feature_store; init_feature_store(); print('feature_store schema ready')"
 
 .PHONY: setup
 setup: install-dev env db-load ## Full first-time setup (venv, deps, .env, database)
