@@ -69,6 +69,41 @@ def treat_missing_and_outliers(
     return cleaned, pd.DataFrame(rows)
 
 
+def treat_missing_and_outliers_mixed(
+    df: pd.DataFrame,
+    numeric_cols: list[str],
+    categorical_cols: list[str] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Impute numeric columns with mean (+ IQR outlier replacement)
+    and categorical columns with mode (Task 4.1).
+    """
+    cleaned, report = treat_missing_and_outliers(df, columns=numeric_cols)
+    categorical_cols = categorical_cols or []
+
+    extra_rows: list[dict[str, object]] = []
+    for col in categorical_cols:
+        if col not in cleaned.columns:
+            continue
+        mode_val = cleaned[col].mode(dropna=True)
+        fill = mode_val.iloc[0] if not mode_val.empty else "unknown"
+        missing_mask = cleaned[col].isna() | (cleaned[col].astype(str).str.lower() == "undefined")
+        missing_count = int(missing_mask.sum())
+        cleaned.loc[missing_mask, col] = fill
+        extra_rows.append(
+            {
+                "column": col,
+                "missing_replaced": missing_count,
+                "outliers_replaced": 0,
+                "replacement_value": fill,
+            }
+        )
+
+    if extra_rows:
+        report = pd.concat([report, pd.DataFrame(extra_rows)], ignore_index=True)
+    return cleaned, report
+
+
 class MeanImputeOutlierTransformer(BaseEstimator, TransformerMixin):
     """Sklearn-compatible transformer wrapping mean imputation + IQR outlier treatment."""
 

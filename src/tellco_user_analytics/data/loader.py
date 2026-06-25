@@ -10,6 +10,7 @@ from tellco_user_analytics.data.columns import (
     APPLICATIONS,
     BEARER_ID,
     DURATION_MS,
+    EXPERIENCE_SESSION_COLUMNS,
     HANDSET_MANUFACTURER,
     HANDSET_TYPE,
     TOTAL_DL,
@@ -48,6 +49,24 @@ def load_xdr_sessions(engine: Engine | None = None) -> pd.DataFrame:
         TOTAL_DL,
         TOTAL_UL,
         *app_columns,
+    ]
+
+    query = text(f"SELECT {_quoted(columns)} FROM {TABLE_NAME}")
+    return pd.read_sql(query, engine)
+
+
+def load_xdr_experience_sessions(engine: Engine | None = None) -> pd.DataFrame:
+    """
+    Load session-level xDR data for experience (network QoS) analysis.
+
+    Includes RTT, throughput, TCP retransmission, and handset type.
+    """
+    engine = engine or get_engine()
+
+    columns = [
+        BEARER_ID,
+        USER_ID,
+        *EXPERIENCE_SESSION_COLUMNS,
     ]
 
     query = text(f"SELECT {_quoted(columns)} FROM {TABLE_NAME}")
