@@ -40,6 +40,29 @@ services:
       timeout: 5s
       retries: 10
 
+  dashboard:
+    build: .
+    container_name: tellco-dashboard
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: tellco
+      DB_USER: postgres
+      DB_PASSWORD: tellco_dev
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: tellco_analytics
+      MYSQL_USER: root
+      MYSQL_PASSWORD: tellco_dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
 volumes:
   tellco_pg_data:
   tellco_mysql_data:
