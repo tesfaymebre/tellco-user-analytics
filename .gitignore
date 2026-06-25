@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+
+# Data / secrets — never commit credentials
+*.csv
+*.parquet
+
+# Docker
+.docker/
+
+# Large data dump — load locally via scripts/load_database.sh
+telecom.sql
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Accidental scratch files
+Untitled

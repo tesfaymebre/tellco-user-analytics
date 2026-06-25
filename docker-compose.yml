@@ -1,0 +1,27 @@
+# TellCo PostgreSQL — local dev database
+# Start:  docker compose up -d
+# Load:   ./scripts/load_database.sh
+# Stop:   docker compose down
+# Reset:  docker compose down -v   (deletes all data)
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: tellco-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tellco
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tellco_dev
+    ports:
+      - "5433:5432"   # host:container — Postgres always listens on 5432 inside the container
+    volumes:
+      - tellco_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tellco"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  tellco_pg_data:
