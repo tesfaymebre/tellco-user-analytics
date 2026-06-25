@@ -48,7 +48,5 @@ def aggregate_user_sessions(df: pd.DataFrame) -> pd.DataFrame:
             TOTAL_UL: "total_ul_bytes",
         }
     )
-    aggregated["total_data_bytes"] = (
-        aggregated["total_dl_bytes"] + aggregated["total_ul_bytes"]
-    )
+    aggregated["total_data_bytes"] = aggregated["total_dl_bytes"] + aggregated["total_ul_bytes"]
     return aggregated

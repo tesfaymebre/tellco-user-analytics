@@ -18,5 +18,5 @@ def verify_connection() -> int:
     """
     engine = get_engine()
     with engine.connect() as conn:
-        result = conn.execute(text('SELECT COUNT(*) FROM public.xdr_data'))
+        result = conn.execute(text("SELECT COUNT(*) FROM public.xdr_data"))
         return result.scalar_one()

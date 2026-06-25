@@ -52,7 +52,7 @@ def marketing_handset_summary(
         "-------------------------------",
         f"Top {top_mfr_count} manufacturers (by session volume): "
         + ", ".join(f"{name} ({count:,})" for name, count in top_mfrs.items()),
-        f"Top 10 handset models: "
+        "Top 10 handset models: "
         + ", ".join(f"{name} ({count:,})" for name, count in top_models.items()),
         "",
         "Top models within leading manufacturers:",
